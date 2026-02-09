@@ -11,15 +11,13 @@ import SupportStreams from "./screens/SupportStreams";
 import { QrScan } from "./screens/TrustAction";
 import StopSupport from "./screens/StopSupport";
 import StreamDetails from "./screens/StreamDetails";
-import { useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 
 function App() {
   const { isConnected } = useAccount();
-  const isLoggedIn = useIsLoggedIn();
 
   return (
     <BrowserRouter>
-      {!isLoggedIn && !isConnected ? (
+      {!isConnected ? (
         <Login />
       ) : (
         <Routes>

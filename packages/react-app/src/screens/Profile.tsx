@@ -1,7 +1,6 @@
 import { useGetMember, useGetMemberTrustees, useGetMemberTrusters } from "@/hooks/queries/useGetMember";
 import { useBalanceStream } from "@/hooks/useBalanceStream";
 import { formatScore, formatFlow, truncateAddress } from "@/utils";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { QRCodeSVG } from "qrcode.react";
 import { useAccount } from "wagmi";
 import { useVerifiedIdentities } from "@/hooks/useVerifiedIdentities";
@@ -15,7 +14,6 @@ export default function Profile() {
   const { data: trusteesData } = useGetMemberTrustees(account.address ?? "");
   const { data: trustersData } = useGetMemberTrusters(account.address ?? "");
   const identities = useVerifiedIdentities(account.address);
-  const { user = {} } = useDynamicContext();
 
   const inFlowRate = BigInt(memberData?.data?.member?.inFlowRate || 0);
   const outFlowRate = BigInt(memberData?.data?.member?.outFlowRate || 0);
@@ -26,10 +24,7 @@ export default function Profile() {
   const trustees = trusteesData?.data?.member?.trustees || [];
   const trusters = trustersData?.data?.member?.trusters || [];
   const trustScore = formatScore(memberData?.data?.member?.trustScore || "");
-  const displayName =
-    (user as { alias?: string })?.alias ||
-    (user as { email?: string })?.email?.split("@")[0] ||
-    truncateAddress(account.address || "");
+  const displayName = truncateAddress(account.address || "");
 
   const hasIdentity = Object.entries(identities || {}).some(([, v]) => v);
 

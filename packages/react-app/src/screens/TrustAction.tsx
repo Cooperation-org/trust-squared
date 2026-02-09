@@ -24,8 +24,7 @@ import { PasteInput } from "@/components/PasteInput";
 import { truncateAddress } from "@/utils";
 import Blockies from "react-blockies";
 
-// @ts-expect-error MiniPay detection
-const isMiniPay = window?.ethereum?.isMiniPay;
+const isMiniPay = !!(window?.ethereum && 'isMiniPay' in window.ethereum && (window.ethereum as Record<string, unknown>).isMiniPay);
 const gasOpts = isMiniPay
   ? {}
   : {

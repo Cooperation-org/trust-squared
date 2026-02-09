@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { multicall } from '@wagmi/core'
-import { config } from '../providers/dynamicProvider'
+import { config } from '../providers/reownProvider'
 import { POOL_CONTRACT } from "@/env";
 import { abi } from '../abis/TrustPool'
 

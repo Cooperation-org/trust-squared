@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
 import { injected } from "@wagmi/connectors";
 import { useConnect } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
 import Welcome from "./Welcome";
 
 export default function Login() {
   const { connect } = useConnect();
+  const { open } = useAppKit();
   const [showWelcome, setShowWelcome] = useState(() => {
     return !localStorage.getItem("trust2_onboarded");
   });
@@ -58,11 +59,12 @@ export default function Login() {
               Connect with MiniPay
             </Button>
           ) : (
-            <DynamicConnectButton
-              buttonClassName="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-medium transition-all inline-flex items-center justify-center text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 disabled:pointer-events-none disabled:opacity-50"
+            <Button
+              onClick={() => open()}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-medium text-base transition-all"
             >
               Connect Wallet
-            </DynamicConnectButton>
+            </Button>
           )}
 
           <p className="text-center text-gray-600 text-xs">

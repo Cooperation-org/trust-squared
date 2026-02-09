@@ -4,11 +4,9 @@ import { formatFlow, truncateAddress } from "@/utils";
 import Blockies from "react-blockies";
 import { useAccount } from "wagmi";
 import { useState } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 export default function Trustees() {
   const { address } = useAccount();
-  const { user = {} } = useDynamicContext();
   const [activeTab, setActiveTab] = useState<'trustees' | 'trusters'>('trustees');
 
   const { data: trusteesData } = useGetMemberTrustees(address ?? "");

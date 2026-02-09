@@ -2,13 +2,13 @@ import { Home, Compass, BarChart3, User, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useDisconnect } from "wagmi";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useAppKit } from "@reown/appkit/react";
 
 export default function BottomNavbar() {
   const location = useLocation();
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   const { disconnect } = useDisconnect();
-  const { handleLogOut } = useDynamicContext();
+  const appKit = useAppKit();
 
   const isActive = (route: string) => {
     if (route === "/") return location.pathname === "/";
@@ -18,7 +18,6 @@ export default function BottomNavbar() {
   const handleLogout = async () => {
     try {
       disconnect();
-      await handleLogOut();
       setShowLogoutMenu(false);
     } catch (error) {
       console.error("Logout error:", error);

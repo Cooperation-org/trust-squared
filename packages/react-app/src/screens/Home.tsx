@@ -1,7 +1,6 @@
 import { useGetMember } from "@/hooks/queries/useGetMember";
 import { useBalanceStream } from "@/hooks/useBalanceStream";
 import { formatScore, formatFlow, truncateAddress } from "@/utils";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useAccount } from "wagmi";
 import { useVerifiedIdentities } from "@/hooks/useVerifiedIdentities";
 import {
@@ -20,7 +19,6 @@ export default function Home() {
   const account = useAccount();
   const { data } = useGetMember(account.address as string);
   const identities = useVerifiedIdentities(account.address);
-  const { user = {} } = useDynamicContext();
 
   const inFlowRate = BigInt(data?.data?.member?.inFlowRate || 0);
   const outFlowRate = BigInt(data?.data?.member?.outFlowRate || 0);
@@ -31,10 +29,7 @@ export default function Home() {
   const supporters = data?.data?.member?.trusters?.length || 0;
   const trustees = data?.data?.member?.trustees?.length || 0;
   const trustScore = formatScore(data?.data?.member?.trustScore || "");
-  const displayName =
-    (user as { alias?: string })?.alias ||
-    (user as { email?: string })?.email?.split("@")[0] ||
-    truncateAddress(account.address || "");
+  const displayName = truncateAddress(account.address || "");
 
   const hasIdentity = Object.entries(identities || {}).some(([, v]) => v);
 

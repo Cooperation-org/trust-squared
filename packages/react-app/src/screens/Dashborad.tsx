@@ -1,7 +1,6 @@
 import { useGetMember, useGetMemberTrustees, useGetMemberTrusters } from "@/hooks/queries/useGetMember";
 import { useBalanceStream } from "@/hooks/useBalanceStream";
 import { formatScore, formatFlow, truncateAddress } from "@/utils";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useAccount } from "wagmi";
 import Blockies from "react-blockies";
 
@@ -16,16 +15,12 @@ export default function Dashboard() {
   const netFlowRate = inFlowRate - outFlowRate;
 
   const balance = useBalanceStream(account.address, netFlowRate);
-  const { user = {} } = useDynamicContext();
 
   const supporters = trustersData?.data?.member?.trusters?.length || 0;
   const receivers = trusteesData?.data?.member?.trustees?.length || 0;
   const trustScore = formatScore(memberData?.data?.member?.trustScore || "");
 
-  const displayName =
-    (user as { alias?: string })?.alias ||
-    (user as { email?: string })?.email?.split("@")[0] ||
-    truncateAddress(account.address || "");
+  const displayName = truncateAddress(account.address || "");
 
   // Calculate donut progress (percentage fill based on activity)
   const totalActivity = supporters + receivers;
