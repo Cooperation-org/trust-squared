@@ -2,76 +2,36 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useAccount } from "wagmi";
 import "./App.css";
 import BottomNavbar from "./components/BottomNavbar";
-// import Navbar from "./components/Navbar";
-import Trustees from "./screens/Trustees";
 import Home from "./screens/Home";
-import Layout from "./screens/Layout";
 import Login from "./screens/Login";
 import Dashborad from "./screens/Dashborad";
+import Profile from "./screens/Profile";
+import Explore from "./screens/Explore";
+import SupportStreams from "./screens/SupportStreams";
 import { QrScan } from "./screens/TrustAction";
-
-import {  useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
+import { useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 
 function App() {
-  const {isConnected} = useAccount()
-  // const { sdkHasLoaded } = useDynamicContext();
+  const { isConnected } = useAccount();
   const isLoggedIn = useIsLoggedIn();
-  // const { isConnected, address } = useAccount();
-  // console.log({isLoggedIn}, {sdkHasLoaded}, { isConnected }, { address });
+
   return (
     <BrowserRouter>
       {!isLoggedIn && !isConnected ? (
         <Login />
       ) : (
         <Routes>
-          {/* Other routes with navbars */}
           <Route
             path="/*"
             element={
               <>
-                {/* <Navbar /> */}
                 <Routes>
-                  {/* Add your other routes here */}
-                  <Route
-                    path="/"
-                    element={
-                      <Layout>
-                        <Home />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path="/trustees"
-                    element={
-                      <Layout>
-                        <Trustees />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <Layout>
-                    <Dashborad />
-                      </Layout>
-                    }
-                  />
-                  {/* <Route
-                    path="/history"
-                    element={
-                      <Layout>
-                        <History />
-                      </Layout>
-                    }
-                  /> */}
-                  <Route
-                    path="/trust"
-                    element={
-                      <Layout>
-                        <QrScan />
-                      </Layout>
-                    }
-                  />
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboard" element={<Dashborad />} />
+                  <Route path="/explore" element={<Explore />} />
+                  <Route path="/streams" element={<SupportStreams />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/trust" element={<QrScan />} />
                 </Routes>
                 <BottomNavbar />
               </>

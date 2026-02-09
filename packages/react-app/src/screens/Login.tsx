@@ -1,70 +1,73 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DynamicConnectButton } from "@dynamic-labs/sdk-react-core";
 import { injected } from "@wagmi/connectors";
 import { useConnect } from "wagmi";
-
+import Welcome from "./Welcome";
 
 export default function Login() {
   const { connect } = useConnect();
+  const [showWelcome, setShowWelcome] = useState(() => {
+    return !localStorage.getItem("trust2_onboarded");
+  });
 
-  let isMiniPlay = false;
-  if (window && window.ethereum) {
-    
-
-   
-  
-
-if (window.ethereum && 'isMiniPay' in window.ethereum) {
-
-  if (window.ethereum.isMiniPay) {
-    isMiniPlay = true;
-  }
-}
-  }
+  const isMiniPay = !!(
+    window?.ethereum && "isMiniPay" in window.ethereum && window.ethereum.isMiniPay
+  );
 
   const onConnectMiniPay = () => {
     try {
-      connect({
-        connector: injected(),
-      });
+      connect({ connector: injected() });
     } catch (error) {
       console.error("Error connecting:", error);
     }
   };
 
+  const handleOnboardingComplete = () => {
+    localStorage.setItem("trust2_onboarded", "true");
+    setShowWelcome(false);
+  };
+
+  if (showWelcome) {
+    return <Welcome onComplete={handleOnboardingComplete} />;
+  }
+
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
-     <div className="text-center space-y-6 mb-8">
-        {/* Logo Section */}
-        <div className="text-center space-y-8 mb-8">
-        
-           <img src="/logo2.svg" alt="logo" className="w-44 block mx-auto" />
-          
-          
-          {/* Subtitle */}
-          <p className="text-gray-400 text-sm leading-relaxed px-4">
-            Build your reputation through trust
-            <br />
-            and contributions.
-          </p>
+      <div className="w-full max-w-sm space-y-10">
+        {/* Logo & Branding */}
+        <div className="text-center space-y-4">
+          <img src="/logo2.svg" alt="Trust²" className="w-28 block mx-auto" />
+          <div className="space-y-2">
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Secure. Decentralized. Trusted.
+            </p>
+            <p className="text-gray-500 text-xs">
+              Build your reputation through trust and contributions.
+            </p>
+          </div>
         </div>
 
-        {/* Sign In Button */}
-        <div className="w-full">
-          {isMiniPlay ? (
-            <Button 
+        {/* Connect Wallet */}
+        <div className="space-y-4">
+          {isMiniPay ? (
+            <Button
               onClick={onConnectMiniPay}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-medium text-base transition-all"
             >
-              Sign in
+              Connect with MiniPay
             </Button>
           ) : (
-            <DynamicConnectButton 
-              buttonClassName="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            <DynamicConnectButton
+              buttonClassName="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-medium transition-all inline-flex items-center justify-center text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 disabled:pointer-events-none disabled:opacity-50"
             >
-              Sign in
+              Connect Wallet
             </DynamicConnectButton>
           )}
+
+          <p className="text-center text-gray-600 text-xs">
+            By connecting your wallet, you agree to our Terms of Service
+          </p>
         </div>
       </div>
     </div>

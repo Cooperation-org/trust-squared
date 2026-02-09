@@ -13,8 +13,6 @@ function truncateAddress(address: string): string {
 }
 
 export default function TrustAccount({ address, name = "" }: ProfileCardProps) {
-  console.log("TrustAccount received:", { address, name }); // للـ debugging
-  
   const displayName = name?.trim() || truncateAddress(address);
   
   return (
