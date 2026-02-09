@@ -1,84 +1,35 @@
 import TrustAccount from "@/components/TrustAccount";
 import { useGetMemberTrustees, useGetMemberTrusters } from "@/hooks/queries/useGetMember";
-import { formatFlow, getAddressLink, truncateAddress } from "@/utils";
-import { ExternalLink, Settings, LogOut } from "lucide-react";
+import { formatFlow, truncateAddress } from "@/utils";
 import Blockies from "react-blockies";
-import { Link } from "react-router-dom";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { useState } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
-export default function History() {
+export default function Trustees() {
   const { address } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { user = {}, handleLogOut } = useDynamicContext();
-  const [activeTab, setActiveTab] = useState<'trustees' | 'delegates'>('trustees');
-  const [showLogoutMenu, setShowLogoutMenu] = useState(false);
+  const { user = {} } = useDynamicContext();
+  const [activeTab, setActiveTab] = useState<'trustees' | 'trusters'>('trustees');
 
-  // Get both trustees and trusters data
   const { data: trusteesData } = useGetMemberTrustees(address ?? "");
   const { data: trustersData } = useGetMemberTrusters(address ?? "");
 
-  // Calculate stats based on active tab
-  const currentData = activeTab === 'trustees' ? trusteesData : trustersData;
-  const listData = activeTab === 'trustees' 
-    ? trusteesData?.data?.member?.trustees 
+  const listData = activeTab === 'trustees'
+    ? trusteesData?.data?.member?.trustees
     : trustersData?.data?.member?.trusters;
 
   const totalCount = listData?.length || 0;
   const totalFlow = listData?.reduce((acc, curr) => acc + Number(curr.flowRate), 0) || 0;
 
-  const handleLogout = async () => {
-    try {
-      disconnect();
-      await handleLogOut();
-      setShowLogoutMenu(false);
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header with Profile and Settings */}
+      {/* Header */}
       <div className="flex items-center justify-between px-6 pt-8 pb-6">
-        <TrustAccount 
-          address={address || ""} 
-          // @ts-ignore
-          name={user?.alias || user?.email?.split("@")[0] || ""}
+        <TrustAccount
+          address={address || ""}
+          name={(user as { alias?: string; email?: string })?.alias || (user as { email?: string })?.email?.split("@")[0] || ""}
         />
-        
-        {/* Settings with Logout Dropdown */}
-        <div className="relative">
-          <button 
-            className="text-gray-400 hover:text-white"
-            onClick={() => setShowLogoutMenu(!showLogoutMenu)}
-          >
-            <Settings className="h-6 w-6" />
-          </button>
-          
-          {/* Logout Dropdown */}
-          {showLogoutMenu && (
-            <div className="absolute right-0 top-8 bg-gray-800 rounded-lg shadow-lg border border-gray-700 min-w-[150px] z-50">
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </button>
-            </div>
-          )}
-        </div>
       </div>
-
-      {/* Click outside to close dropdown */}
-      {showLogoutMenu && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setShowLogoutMenu(false)}
-        />
-      )}
 
       {/* Tab Navigation */}
       <div className="px-6 mb-6">
@@ -94,14 +45,14 @@ export default function History() {
             Trustees
           </button>
           <button
-            onClick={() => setActiveTab('delegates')}
+            onClick={() => setActiveTab('trusters')}
             className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
-              activeTab === 'delegates'
+              activeTab === 'trusters'
                 ? 'bg-green-600 text-white'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            Delegates
+            Trusters
           </button>
         </div>
       </div>
@@ -110,17 +61,17 @@ export default function History() {
       <div className="px-6 space-y-4 mb-6">
         <div className="bg-gray-900 rounded-lg p-4 flex justify-between items-center">
           <span className="text-white font-medium">
-            {activeTab === 'trustees' ? 'Total Supporters' : 'Total Delegates'}
+            {activeTab === 'trustees' ? 'Total Supporters' : 'Total Trusters'}
           </span>
           <span className="text-white text-lg font-semibold">{totalCount}</span>
         </div>
-        
+
         <div className="bg-gray-900 rounded-lg p-4 flex justify-between items-center">
           <span className="text-white font-medium">
             {activeTab === 'trustees' ? 'Total Inflow' : 'Total Outflow'}
           </span>
           <span className="text-white text-lg font-semibold">
-            $ {totalFlow ? formatFlow(totalFlow.toString()) : '0'}
+            {totalFlow ? formatFlow(totalFlow.toString()) : '0 G$'}
           </span>
         </div>
       </div>
@@ -137,16 +88,15 @@ export default function History() {
       <div className="px-6">
         {!listData || listData.length === 0 ? (
           <div className="py-12 text-center text-gray-500">
-            <p>No {activeTab === 'trustees' ? 'trustees' : 'delegates'} yet</p>
+            <p>No {activeTab === 'trustees' ? 'trustees' : 'trusters'} yet</p>
           </div>
         ) : (
           <div className="space-y-0">
             {listData.map((item) => {
-              // Handle different ID formats for trustees vs trusters
-              const account = activeTab === 'trustees' 
-                ? item.id.split("_")[1] 
+              const account = activeTab === 'trustees'
+                ? item.id.split("_")[1]
                 : item.id.split("_")[0];
-              
+
               return (
                 <div key={item.id} className="py-4 border-b border-gray-800 last:border-b-0">
                   <div className="flex items-center justify-between">
@@ -164,7 +114,7 @@ export default function History() {
                       </div>
                     </div>
                     <div className="text-white font-medium">
-                      $ {formatFlow(item.flowRate.toString())}
+                      {formatFlow(item.flowRate.toString())}
                     </div>
                   </div>
                 </div>
@@ -174,7 +124,6 @@ export default function History() {
         )}
       </div>
 
-      {/* Add bottom padding to account for fixed navigation */}
       <div className="pb-20"></div>
     </div>
   );
