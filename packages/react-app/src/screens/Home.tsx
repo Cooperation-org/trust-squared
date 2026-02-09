@@ -3,6 +3,7 @@ import { useBalanceStream } from "@/hooks/useBalanceStream";
 import { formatScore, formatFlow, truncateAddress } from "@/utils";
 import { useAccount } from "wagmi";
 import { useVerifiedIdentities } from "@/hooks/useVerifiedIdentities";
+import VerificationBanner from "@/components/VerificationBanner";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -62,6 +63,9 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Verification Banner - shown when no identity verified */}
+      <VerificationBanner />
 
       <div className="px-5 space-y-4">
         {/* Balance Card */}

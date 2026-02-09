@@ -11,6 +11,7 @@ import SupportStreams from "./screens/SupportStreams";
 import { QrScan } from "./screens/TrustAction";
 import StopSupport from "./screens/StopSupport";
 import StreamDetails from "./screens/StreamDetails";
+import Verify from "./screens/Verify";
 
 function App() {
   const { isConnected } = useAccount();
@@ -34,6 +35,7 @@ function App() {
                   <Route path="/trust" element={<QrScan />} />
                   <Route path="/stop-support" element={<StopSupport />} />
                   <Route path="/stream-details" element={<StreamDetails />} />
+                  <Route path="/verify" element={<Verify />} />
                 </Routes>
                 <BottomNavbar />
               </>
