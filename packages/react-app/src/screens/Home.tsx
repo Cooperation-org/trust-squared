@@ -12,6 +12,7 @@ import {
   BadgeCheck,
   Users,
   ChevronRight,
+  Gift,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Blockies from "react-blockies";
@@ -150,6 +151,18 @@ export default function Home() {
           <p className="text-gray-500 text-xs uppercase tracking-wider px-1">
             Quick Actions
           </p>
+          <Link
+            to="/claim"
+            className="flex items-center justify-between bg-gray-900/80 rounded-xl p-4 hover:bg-gray-800/80 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-yellow-600/20 p-2.5 rounded-full">
+                <Gift className="h-4 w-4 text-yellow-400" />
+              </div>
+              <span className="text-white font-medium">Claim Daily G$</span>
+            </div>
+            <ChevronRight className="h-4 w-4 text-gray-500" />
+          </Link>
           <Link
             to="/trust"
             className="flex items-center justify-between bg-gray-900/80 rounded-xl p-4 hover:bg-gray-800/80 transition-colors"
