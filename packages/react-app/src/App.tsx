@@ -9,6 +9,8 @@ import Profile from "./screens/Profile";
 import Explore from "./screens/Explore";
 import SupportStreams from "./screens/SupportStreams";
 import { QrScan } from "./screens/TrustAction";
+import StopSupport from "./screens/StopSupport";
+import StreamDetails from "./screens/StreamDetails";
 import { useIsLoggedIn } from "@dynamic-labs/sdk-react-core";
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
                   <Route path="/streams" element={<SupportStreams />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/trust" element={<QrScan />} />
+                  <Route path="/stop-support" element={<StopSupport />} />
+                  <Route path="/stream-details" element={<StreamDetails />} />
                 </Routes>
                 <BottomNavbar />
               </>
