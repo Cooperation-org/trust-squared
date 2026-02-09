@@ -123,9 +123,19 @@ export default function StopSupport() {
       });
     } catch (e: unknown) {
       setStep("confirm");
+
+      const errStr = (e as Error)?.message || String(e);
+      let description = "Could not stop support. Please try again.";
+
+      if (errStr.includes("rejected") || errStr.includes("denied")) {
+        description = "You rejected the transaction in your wallet.";
+      } else if (errStr.includes("insufficient")) {
+        description = "Insufficient funds for gas fees.";
+      }
+
       toast({
         title: "Transaction failed",
-        description: "Could not stop support. Please try again.",
+        description,
       });
     }
   };

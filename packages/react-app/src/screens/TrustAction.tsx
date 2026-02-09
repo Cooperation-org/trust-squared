@@ -10,6 +10,7 @@ import {
   encodeAbiParameters,
   parseAbiParameters,
   isAddress,
+  formatUnits,
 } from "viem";
 import {
   Loader2,
@@ -18,6 +19,7 @@ import {
   Shield,
   Clock,
   CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { PasteInput } from "@/components/PasteInput";
@@ -77,6 +79,7 @@ export const QrScan = () => {
   const [txHash, setTxHash] = useState<string>("");
 
   const numAmount = parseFloat(amount) || 0;
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   const handleScan = (results: IDetectedBarcode[]) => {
     if (results.length > 0) {
@@ -95,9 +98,24 @@ export const QrScan = () => {
     }
   };
 
+  const isSelfStream =
+    recipient && account.address
+      ? recipient.toLowerCase() === account.address.toLowerCase()
+      : false;
+
   const trust = async () => {
     if (!recipient || numAmount <= 0) return;
 
+    if (isSelfStream) {
+      setErrorMsg("You cannot stream to your own address.");
+      toast({
+        title: "Invalid recipient",
+        description: "You cannot stream to your own address.",
+      });
+      return;
+    }
+
+    setErrorMsg("");
     setStep("confirming");
 
     try {
@@ -125,10 +143,27 @@ export const QrScan = () => {
       });
     } catch (e: unknown) {
       setStep("amount");
-      toast({
-        title: "Transaction failed",
-        description: "Please try again",
-      });
+
+      const errStr = (e as Error)?.message || String(e);
+      let title = "Transaction failed";
+      let description = "Please try again.";
+
+      if (errStr.includes("insufficient") || errStr.includes("exceeds balance")) {
+        title = "Insufficient G$ balance";
+        description = "You don't have enough G$ to start this stream. Claim your daily G$ first.";
+      } else if (errStr.includes("NO_FLOW_CHANGE")) {
+        title = "Flow already exists";
+        description = "You already have an active stream to this address with the same rate.";
+      } else if (errStr.includes("rejected") || errStr.includes("denied")) {
+        title = "Transaction rejected";
+        description = "You rejected the transaction in your wallet.";
+      } else if (errStr.includes("NotAcceptedSuperToken")) {
+        title = "Token not supported";
+        description = "The token is not accepted by the TrustPool contract.";
+      }
+
+      setErrorMsg(description);
+      toast({ title, description });
     }
   };
 
@@ -223,6 +258,24 @@ export const QrScan = () => {
             </div>
           </div>
 
+          {/* Self-stream warning */}
+          {isSelfStream && (
+            <div className="flex items-center gap-2 bg-yellow-600/15 border border-yellow-600/30 rounded-xl p-3">
+              <AlertTriangle className="h-4 w-4 text-yellow-400 flex-shrink-0" />
+              <p className="text-yellow-300 text-sm">
+                You cannot stream to your own address.
+              </p>
+            </div>
+          )}
+
+          {/* Error message */}
+          {errorMsg && !isSelfStream && (
+            <div className="flex items-center gap-2 bg-red-600/15 border border-red-600/30 rounded-xl p-3">
+              <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" />
+              <p className="text-red-300 text-sm">{errorMsg}</p>
+            </div>
+          )}
+
           {/* Disclaimer */}
           <p className="text-gray-600 text-xs text-center leading-relaxed px-4">
             By starting this stream, you agree to monthly recurring charges. You
@@ -233,7 +286,7 @@ export const QrScan = () => {
           {/* Submit Button */}
           <Button
             onClick={trust}
-            disabled={numAmount <= 0}
+            disabled={numAmount <= 0 || isSelfStream}
             className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:text-gray-500 text-white py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center gap-2"
           >
             <Zap className="h-4 w-4" />

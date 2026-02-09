@@ -4,6 +4,7 @@ import { formatScore, truncateAddress } from "@/utils";
 import { ArrowLeft, Bell, Search, Users } from "lucide-react";
 import Blockies from "react-blockies";
 import { Link, useNavigate } from "react-router-dom";
+import ErrorState from "@/components/ErrorState";
 
 interface CommunityMember {
   id: string;
@@ -49,7 +50,7 @@ export default function Explore() {
   const [sortBy, setSortBy] = useState<SortMode>("trustScore");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data, status } = useGenericQuery(
+  const { data, status, refetch } = useGenericQuery(
     ["community", sortBy],
     () => fetchMembers(sortBy)
   );
@@ -110,7 +111,13 @@ export default function Explore() {
         </div>
 
         {/* Members List */}
-        {status === "pending" ? (
+        {status === "error" ? (
+          <ErrorState
+            title="Failed to load community"
+            message="Could not fetch community members. Check your connection and try again."
+            onRetry={refetch}
+          />
+        ) : status === "pending" ? (
           <div className="flex justify-center py-12">
             <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
           </div>

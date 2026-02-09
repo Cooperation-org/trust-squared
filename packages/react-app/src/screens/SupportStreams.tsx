@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useGetMemberTrustees, useGetMemberTrusters } from "@/hooks/queries/useGetMember";
 import { formatFlow, truncateAddress } from "@/utils";
-import { ArrowLeft, X, Eye, ChevronRight } from "lucide-react";
+import { ArrowLeft, X, Eye, ChevronRight, Loader2 } from "lucide-react";
 import Blockies from "react-blockies";
 import { useAccount } from "wagmi";
 import { useNavigate, Link } from "react-router-dom";
+import ErrorState from "@/components/ErrorState";
 
 type Tab = "give" | "receive";
 
@@ -13,8 +14,11 @@ export default function SupportStreams() {
   const { address } = useAccount();
   const [activeTab, setActiveTab] = useState<Tab>("give");
 
-  const { data: trusteesData } = useGetMemberTrustees(address ?? "");
-  const { data: trustersData } = useGetMemberTrusters(address ?? "");
+  const { data: trusteesData, status: trusteesStatus, refetch: refetchTrustees } = useGetMemberTrustees(address ?? "");
+  const { data: trustersData, status: trustersStatus, refetch: refetchTrusters } = useGetMemberTrusters(address ?? "");
+
+  const isLoading = trusteesStatus === "pending" || trustersStatus === "pending";
+  const isError = trusteesStatus === "error" || trustersStatus === "error";
 
   const trustees = trusteesData?.data?.member?.trustees || [];
   const trusters = trustersData?.data?.member?.trusters || [];
@@ -94,7 +98,17 @@ export default function SupportStreams() {
         </div>
 
         {/* Stream List */}
-        {listData.length === 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-6 w-6 text-green-500 animate-spin" />
+          </div>
+        ) : isError ? (
+          <ErrorState
+            title="Failed to load streams"
+            message="Could not fetch your support streams. Please try again."
+            onRetry={() => { refetchTrustees(); refetchTrusters(); }}
+          />
+        ) : listData.length === 0 ? (
           <div className="bg-gray-900/80 rounded-xl p-8 text-center">
             <p className="text-gray-500 text-sm">
               {activeTab === "give"

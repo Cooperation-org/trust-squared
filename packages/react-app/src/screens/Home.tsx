@@ -19,7 +19,7 @@ import Blockies from "react-blockies";
 
 export default function Home() {
   const account = useAccount();
-  const { data } = useGetMember(account.address as string);
+  const { data, status: memberStatus } = useGetMember(account.address as string);
   const identities = useVerifiedIdentities(account.address);
 
   const inFlowRate = BigInt(data?.data?.member?.inFlowRate || 0);
@@ -74,10 +74,14 @@ export default function Home() {
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
             G$ Balance
           </p>
-          <p className="text-white text-3xl font-bold mb-4">
-            {balance ? `${balance}` : "0.00"}
-            <span className="text-lg text-gray-400 ml-1">G$</span>
-          </p>
+          {memberStatus === "pending" ? (
+            <div className="h-9 w-48 bg-gray-800 rounded-lg animate-pulse mb-4" />
+          ) : (
+            <p className="text-white text-3xl font-bold mb-4">
+              {balance ? `${balance}` : "0.00"}
+              <span className="text-lg text-gray-400 ml-1">G$</span>
+            </p>
+          )}
 
           {/* Inflow / Outflow */}
           <div className="flex gap-4">
