@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useAccount } from "wagmi";
 import "./App.css";
@@ -16,12 +17,20 @@ import ClaimGD from "./screens/ClaimGD";
 
 function App() {
   const { isConnected } = useAccount();
+  const wasConnected = useRef(false);
+  const connectCount = useRef(0);
+
+  if (!isConnected) {
+    if (wasConnected.current) {
+      connectCount.current += 1;
+      wasConnected.current = false;
+    }
+    return <BrowserRouter><Login /></BrowserRouter>;
+  }
+  wasConnected.current = true;
 
   return (
-    <BrowserRouter>
-      {!isConnected ? (
-        <Login />
-      ) : (
+    <BrowserRouter key={connectCount.current}>
         <Routes>
           <Route
             path="/*"
@@ -44,7 +53,6 @@ function App() {
             }
           />
         </Routes>
-      )}
     </BrowserRouter>
   );
 }
