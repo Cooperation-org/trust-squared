@@ -14,7 +14,7 @@ export default function VerificationBanner() {
   return (
     <Link
       to="/verify"
-      className="flex items-center gap-3 bg-yellow-600/15 border border-yellow-600/30 rounded-xl p-4 mx-5 mb-4"
+      className="flex items-center gap-3 bg-yellow-600/10 border border-yellow-600/20 rounded-xl p-4 mx-5 mb-4"
     >
       <div className="bg-yellow-600/20 p-2 rounded-full flex-shrink-0">
         <ShieldAlert className="h-5 w-5 text-yellow-400" />
