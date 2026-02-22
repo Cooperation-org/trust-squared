@@ -81,7 +81,6 @@ export default function StopSupport() {
       const newFlowRate = existingFlowRate - trusteeFlowRate;
 
       if (newFlowRate <= 0n) {
-        // Delete the entire flow if this is the only trustee
         const userData = encodeAbiParameters(
           parseAbiParameters("address,int96"),
           [trusteeAddress as `0x${string}`, 0n]
@@ -95,7 +94,6 @@ export default function StopSupport() {
           args: [GOODDOLLAR, account.address, POOL_CONTRACT, userData],
         });
       } else {
-        // Update flow to reduce by trustee's rate
         const userData = encodeAbiParameters(
           parseAbiParameters("address,int96"),
           [trusteeAddress as `0x${string}`, 0n]
@@ -143,7 +141,7 @@ export default function StopSupport() {
   // Processing
   if (step === "processing") {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-5">
+      <div className="min-h-screen bg-t2-dark text-white flex flex-col items-center justify-center px-5">
         <Loader2 className="h-12 w-12 text-green-500 animate-spin mb-4" />
         <h2 className="text-xl font-semibold mb-2">Stopping Support</h2>
         <p className="text-gray-400 text-sm text-center">
@@ -156,7 +154,7 @@ export default function StopSupport() {
   // Done
   if (step === "done") {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-5">
+      <div className="min-h-screen bg-t2-dark text-white flex flex-col items-center justify-center px-5">
         <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
         <h2 className="text-xl font-semibold mb-2">Support Stopped</h2>
         <p className="text-gray-400 text-sm text-center mb-6">
@@ -172,83 +170,93 @@ export default function StopSupport() {
     );
   }
 
-  // Confirm Step (default)
+  // Confirm Step - bottom sheet style over stream details background
   return (
-    <div className="min-h-screen bg-black text-white pb-28">
+    <div className="min-h-screen bg-t2-dark text-white flex flex-col">
       {/* Header */}
       <div className="px-5 pt-6 pb-4 flex items-center justify-between">
-        <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-800 rounded-full">
-          <ArrowLeft className="h-5 w-5 text-gray-400" />
+        <button onClick={() => navigate(-1)} className="p-1 hover:bg-t2-card-light rounded-full">
+          <ArrowLeft className="h-5 w-5 text-white" />
         </button>
-        <h1 className="text-white font-semibold">Stream Details</h1>
-        <button onClick={() => navigate("/")} className="p-1 hover:bg-gray-800 rounded-full">
+        <h1 className="text-white font-semibold text-lg">Stream Details</h1>
+        <button onClick={() => navigate("/")} className="p-1 hover:bg-t2-card-light rounded-full">
           <X className="h-5 w-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="px-5 space-y-6">
-        {/* Stream Visual */}
-        <div className="flex items-center justify-center gap-4 py-4">
+      {/* Background stream info (dimmed) */}
+      <div className="px-5 opacity-40 pointer-events-none">
+        <div className="flex items-center justify-center gap-6 py-4">
           {account.address && (
             <div className="text-center">
-              <Blockies seed={account.address.toLowerCase()} size={10} scale={5} className="rounded-full mx-auto" />
-              <p className="text-white text-sm mt-2">You</p>
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-t2-border mx-auto">
+                <Blockies seed={account.address.toLowerCase()} size={10} scale={6} className="rounded-full" />
+              </div>
+              <p className="text-white text-xs mt-1">You</p>
             </div>
           )}
-          <div className="bg-green-600 rounded-full p-2">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" />
+          <div className="bg-green-600 rounded-full w-8 h-8 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M8 12h8M12 8l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <div className="text-center">
-            <Blockies seed={trusteeAddress.toLowerCase()} size={10} scale={5} className="rounded-full mx-auto" />
-            <p className="text-white text-sm mt-2">{truncateAddress(trusteeAddress)}</p>
-          </div>
-        </div>
-
-        {/* Amount */}
-        <div className="text-center">
-          <p className="text-green-400 text-3xl font-bold">{monthlyAmount}</p>
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <span className="text-gray-400 text-sm">per month</span>
-            <span className="bg-green-600/20 text-green-400 text-xs px-2 py-0.5 rounded-full">ACTIVE</span>
-          </div>
-        </div>
-
-        {/* Stop Confirmation */}
-        <div className="bg-gray-900/80 rounded-2xl p-6 space-y-4">
-          <div className="flex justify-center">
-            <div className="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center">
-              <AlertTriangle className="h-7 w-7 text-red-400" />
+            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-t2-border mx-auto">
+              <Blockies seed={trusteeAddress.toLowerCase()} size={10} scale={6} className="rounded-full" />
             </div>
+            <p className="text-white text-xs mt-1">{truncateAddress(trusteeAddress)}</p>
           </div>
-
-          <div className="text-center">
-            <h3 className="text-white text-lg font-semibold mb-2">
-              Stop Supporting {truncateAddress(trusteeAddress)}?
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Stopping will reduce their Trust Score impact. This action cannot be undone immediately.
-            </p>
+        </div>
+        <div className="text-center mb-2">
+          <p className="text-green-400 text-2xl font-bold">{monthlyAmount}</p>
+          <div className="flex items-center justify-center gap-2 mt-1">
+            <span className="text-gray-400 text-xs">per month</span>
+            <span className="bg-green-600/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full">ACTIVE</span>
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-3 pt-2">
-            <button
-              onClick={handleStopSupport}
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-medium transition-colors"
-            >
-              Yes, Stop Support
-            </button>
-            <button
-              onClick={() => navigate(-1)}
-              className="w-full border border-gray-700 text-white py-3 rounded-xl font-medium hover:bg-gray-900 transition-colors"
-            >
-              Cancel
-            </button>
+      {/* Bottom sheet modal */}
+      <div className="flex-1" />
+      <div className="bg-t2-card border-t border-t2-border rounded-t-3xl px-5 pt-4 pb-8">
+        {/* Drag handle */}
+        <div className="w-10 h-1 bg-gray-600 rounded-full mx-auto mb-6" />
+
+        {/* Warning icon */}
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+            <AlertTriangle className="h-8 w-8 text-red-400" />
           </div>
         </div>
 
-        <p className="text-center text-gray-600 text-xs">TRUST² PLATFORM</p>
+        {/* Text */}
+        <div className="text-center mb-6">
+          <h3 className="text-white text-xl font-bold mb-2">
+            Stop Supporting {truncateAddress(trusteeAddress)}?
+          </h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Stopping will reduce their Trust Score impact.
+            This action cannot be undone immediately.
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleStopSupport}
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-semibold transition-colors"
+          >
+            Yes, Stop Support
+          </button>
+          <button
+            onClick={() => navigate(-1)}
+            className="w-full bg-white/10 border border-t2-border text-white py-3.5 rounded-xl font-semibold hover:bg-white/5 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <p className="text-center text-gray-600 text-xs mt-4">TRUST² PLATFORM</p>
       </div>
     </div>
   );
