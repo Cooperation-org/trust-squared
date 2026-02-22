@@ -3,7 +3,7 @@ import { useGenericQuery } from "./useGenericQuery";
 
 const fetchTrusteesData = async (memberId: string) => {
   return fetch(
-    "https://api.studio.thegraph.com/query/59211/trustsquared/version/latest",
+    "https://api.studio.thegraph.com/query/1742484/trustsquared/v2.0.0",
     {
       method: "POST",
       headers: {
@@ -28,7 +28,7 @@ const fetchTrusteesData = async (memberId: string) => {
 
 const fetchMemberData = async (memberId: string) => {
   return fetch(
-    "https://api.studio.thegraph.com/query/59211/trustsquared/version/latest",
+    "https://api.studio.thegraph.com/query/1742484/trustsquared/v2.0.0",
     {
       method: "POST",
       headers: {
@@ -52,7 +52,7 @@ const fetchMemberData = async (memberId: string) => {
 
 const fetchTrustersData = async (memberId: string) => {
   return fetch(
-    "https://api.studio.thegraph.com/query/59211/trustsquared/version/latest",
+    "https://api.studio.thegraph.com/query/1742484/trustsquared/v2.0.0",
     {
       method: "POST",
       headers: {
