@@ -29,7 +29,7 @@ export default function Dashboard() {
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <div className="min-h-screen bg-black text-white pb-28">
+    <div className="min-h-screen bg-t2-dark text-white pb-28">
       {/* Header */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ export default function Dashboard() {
                 stroke="currentColor"
                 strokeWidth="6"
                 fill="transparent"
-                className="text-gray-800"
+                className="text-t2-border"
               />
               <circle
                 cx="60"
@@ -111,14 +111,14 @@ export default function Dashboard() {
 
         {/* Flow Summary Cards */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gray-900/80 rounded-xl p-4">
+          <div className="bg-t2-card border border-t2-border rounded-xl p-4">
             <p className="text-gray-400 text-xs mb-1">Incoming</p>
             <p className="text-green-400 text-lg font-semibold">
               {inFlowRate > 0n ? formatFlow(inFlowRate.toString()) : "0 G$"}
             </p>
             <p className="text-gray-500 text-xs mt-1">per month</p>
           </div>
-          <div className="bg-gray-900/80 rounded-xl p-4">
+          <div className="bg-t2-card border border-t2-border rounded-xl p-4">
             <p className="text-gray-400 text-xs mb-1">Outgoing</p>
             <p className="text-red-400 text-lg font-semibold">
               {outFlowRate > 0n ? formatFlow(outFlowRate.toString()) : "0 G$"}
@@ -128,7 +128,7 @@ export default function Dashboard() {
         </div>
 
         {/* Active Streams Summary */}
-        <div className="bg-gray-900/80 rounded-xl p-4">
+        <div className="bg-t2-card border border-t2-border rounded-xl p-4">
           <h3 className="text-white font-medium mb-3">Active Streams</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
@@ -139,7 +139,7 @@ export default function Dashboard() {
               <span className="text-gray-400 text-sm">Incoming streams</span>
               <span className="text-white font-medium">{supporters}</span>
             </div>
-            <div className="flex justify-between items-center border-t border-gray-800 pt-3">
+            <div className="flex justify-between items-center border-t border-t2-border pt-3">
               <span className="text-gray-400 text-sm">Net flow</span>
               <span
                 className={`font-medium ${

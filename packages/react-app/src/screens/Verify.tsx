@@ -46,10 +46,10 @@ export default function Verify() {
   const verifiedCount = identityList.filter((i) => i.verified).length;
 
   return (
-    <div className="min-h-screen bg-black text-white pb-28">
+    <div className="min-h-screen bg-t2-dark text-white pb-28">
       {/* Header */}
       <div className="px-5 pt-6 pb-4 flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-800 rounded-full">
+        <button onClick={() => navigate(-1)} className="p-1 hover:bg-t2-card-light rounded-full">
           <ArrowLeft className="h-5 w-5 text-gray-400" />
         </button>
         <h1 className="text-white font-semibold text-lg">Identity Verification</h1>
@@ -57,7 +57,7 @@ export default function Verify() {
 
       <div className="px-5 space-y-5">
         {/* Status Card */}
-        <div className="bg-gray-900/80 rounded-2xl p-5 text-center">
+        <div className="bg-t2-card border border-t2-border rounded-2xl p-5 text-center">
           <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-green-600/20 flex items-center justify-center">
             <Shield className="h-8 w-8 text-green-400" />
           </div>
@@ -72,7 +72,7 @@ export default function Verify() {
         </div>
 
         {/* Why Verify */}
-        <div className="bg-gray-900/80 rounded-xl p-4">
+        <div className="bg-t2-card border border-t2-border rounded-xl p-4">
           <h3 className="text-white font-medium mb-2">Why verify?</h3>
           <ul className="space-y-2 text-gray-400 text-sm">
             <li className="flex items-start gap-2">
@@ -98,7 +98,7 @@ export default function Verify() {
         )}
 
         {verifierData && (
-          <div className="bg-gray-900/80 rounded-xl p-4">
+          <div className="bg-t2-card border border-t2-border rounded-xl p-4">
             <h3 className="text-white font-medium mb-2">API Verification Status</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -123,12 +123,12 @@ export default function Verify() {
           {identityList.map((identity) => (
             <div
               key={identity.key}
-              className="bg-gray-900/80 rounded-xl p-4 flex items-center justify-between"
+              className="bg-t2-card border border-t2-border rounded-xl p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    identity.verified ? "bg-green-600/20" : "bg-gray-800"
+                    identity.verified ? "bg-green-600/20" : "bg-t2-card-light"
                   }`}
                 >
                   {identity.verified ? (

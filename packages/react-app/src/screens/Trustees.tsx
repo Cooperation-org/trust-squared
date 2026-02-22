@@ -1,12 +1,14 @@
-import TrustAccount from "@/components/TrustAccount";
 import { useGetMemberTrustees, useGetMemberTrusters } from "@/hooks/queries/useGetMember";
 import { formatFlow, truncateAddress } from "@/utils";
 import Blockies from "react-blockies";
 import { useAccount } from "wagmi";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Trustees() {
   const { address } = useAccount();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'trustees' | 'trusters'>('trustees');
 
   const { data: trusteesData } = useGetMemberTrustees(address ?? "");
@@ -20,18 +22,18 @@ export default function Trustees() {
   const totalFlow = listData?.reduce((acc, curr) => acc + Number(curr.flowRate), 0) || 0;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-t2-dark text-white">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 pt-8 pb-6">
-        <TrustAccount
-          address={address || ""}
-          name={(user as { alias?: string; email?: string })?.alias || (user as { email?: string })?.email?.split("@")[0] || ""}
-        />
+      <div className="px-5 pt-6 pb-4 flex items-center gap-3">
+        <button onClick={() => navigate(-1)} className="p-1 hover:bg-t2-card-light rounded-full">
+          <ArrowLeft className="h-5 w-5 text-white" />
+        </button>
+        <h1 className="text-white font-semibold text-lg">Trust Network</h1>
       </div>
 
       {/* Tab Navigation */}
       <div className="px-6 mb-6">
-        <div className="flex bg-gray-800 rounded-full p-1">
+        <div className="flex bg-t2-card-light rounded-full p-1">
           <button
             onClick={() => setActiveTab('trustees')}
             className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
@@ -57,14 +59,14 @@ export default function Trustees() {
 
       {/* Stats Cards */}
       <div className="px-6 space-y-4 mb-6">
-        <div className="bg-gray-900 rounded-lg p-4 flex justify-between items-center">
+        <div className="bg-t2-card border border-t2-border rounded-lg p-4 flex justify-between items-center">
           <span className="text-white font-medium">
             {activeTab === 'trustees' ? 'Total Supporters' : 'Total Trusters'}
           </span>
           <span className="text-white text-lg font-semibold">{totalCount}</span>
         </div>
 
-        <div className="bg-gray-900 rounded-lg p-4 flex justify-between items-center">
+        <div className="bg-t2-card border border-t2-border rounded-lg p-4 flex justify-between items-center">
           <span className="text-white font-medium">
             {activeTab === 'trustees' ? 'Total Inflow' : 'Total Outflow'}
           </span>
@@ -75,7 +77,7 @@ export default function Trustees() {
       </div>
 
       {/* Table Headers */}
-      <div className="px-6 py-3 border-b border-gray-800">
+      <div className="px-6 py-3 border-b border-t2-border">
         <div className="flex justify-between text-gray-400 text-sm font-medium">
           <span>Name</span>
           <span>Amount</span>
@@ -91,23 +93,23 @@ export default function Trustees() {
         ) : (
           <div className="space-y-0">
             {listData.map((item) => {
-              const account = activeTab === 'trustees'
+              const addr = activeTab === 'trustees'
                 ? item.id.split("_")[1]
                 : item.id.split("_")[0];
 
               return (
-                <div key={item.id} className="py-4 border-b border-gray-800 last:border-b-0">
+                <div key={item.id} className="py-4 border-b border-t2-border last:border-b-0">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Blockies
-                        seed={account.toLowerCase()}
+                        seed={addr.toLowerCase()}
                         size={8}
                         scale={5}
                         className="rounded-full"
                       />
                       <div>
                         <div className="text-white font-medium">
-                          {truncateAddress(account)}
+                          {truncateAddress(addr)}
                         </div>
                       </div>
                     </div>
