@@ -206,7 +206,7 @@ export const QrScan = () => {
   // Amount Step
   if (step === "amount") {
     return (
-      <div className="min-h-screen bg-t2-dark text-white flex flex-col">
+      <div className="min-h-screen bg-t2-dark text-white flex flex-col pb-28">
         {/* Header */}
         <div className="px-5 pt-6 pb-4 flex items-center gap-3">
           <button onClick={() => setStep("scan")} className="p-1 hover:bg-t2-card-light rounded-full">
@@ -354,7 +354,7 @@ export const QrScan = () => {
 
   // Success Step - matches Confirmation.png mockup
   return (
-    <div className="min-h-screen bg-t2-dark text-white flex flex-col">
+    <div className="min-h-screen bg-t2-dark text-white flex flex-col pb-28">
       {/* Header */}
       <div className="px-5 pt-6 pb-4 flex items-center justify-between">
         <button onClick={() => navigate(-1)} className="p-1 hover:bg-t2-card-light rounded-full">
