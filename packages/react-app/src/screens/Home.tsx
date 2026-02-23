@@ -4,7 +4,7 @@ import { useAccount, useReadContract } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { formatUnits } from "viem";
 import VerificationBanner from "@/components/VerificationBanner";
-import { Gift, Search, Bell, ChevronRight, ThumbsUp, BarChart3 } from "lucide-react";
+import { Gift, Search, Bell, ChevronRight, ThumbsUp, BarChart3, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Blockies from "react-blockies";
 import { useState } from "react";
@@ -230,7 +230,7 @@ function BarChart({ inEvents, outEvents, period }: {
 
 export default function Home() {
   const account = useAccount();
-  const { data, status: memberStatus } = useGetMember(account.address as string);
+  const { data, status: memberStatus } = useGetMember(account.address ?? "");
   const { data: trusteesData } = useGetMemberTrustees(account.address ?? "");
   const { data: trustersData } = useGetMemberTrusters(account.address ?? "");
 
@@ -271,6 +271,14 @@ export default function Home() {
 
   const periods: TimePeriod[] = ["1 Min", "Day", "Week", "Month", "Year"];
 
+  if (!account.address) {
+    return (
+      <div className="min-h-screen bg-t2-dark text-white flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-green-500 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-t2-dark text-white pb-28">
       {/* Header */}
@@ -308,12 +316,12 @@ export default function Home() {
 
       <div className="px-5 space-y-5">
         {/* Time Period Tabs */}
-        <div className="flex items-center gap-1 bg-t2-card border border-t2-border rounded-full p-1 w-fit">
+        <div className="flex items-center gap-1 bg-t2-card border border-t2-border rounded-full p-1">
           {periods.map((period) => (
             <button
               key={period}
               onClick={() => setActivePeriod(period)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              className={`flex-1 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 activePeriod === period
                   ? "bg-green-600 text-white"
                   : "text-gray-400 hover:text-white"
