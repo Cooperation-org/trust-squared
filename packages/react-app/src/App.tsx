@@ -25,12 +25,12 @@ function App() {
       connectCount.current += 1;
       wasConnected.current = false;
     }
-    return <BrowserRouter><Login /></BrowserRouter>;
+    return <BrowserRouter basename={import.meta.env.BASE_URL}><Login /></BrowserRouter>;
   }
   wasConnected.current = true;
 
   return (
-    <BrowserRouter key={connectCount.current}>
+    <BrowserRouter basename={import.meta.env.BASE_URL} key={connectCount.current}>
         <Routes>
           <Route
             path="/*"
