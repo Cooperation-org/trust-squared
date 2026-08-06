@@ -12,7 +12,7 @@ export default function WalletProvider({
 }) {
   const isMiniPay = () => {
     if (window && window.ethereum) {
-      // @ts-expect-error MiniPay detection
+      // @ts-ignore MiniPay detection
       if (window.ethereum.isMiniPay) {
         return true;
       }
